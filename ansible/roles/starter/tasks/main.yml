@@ -1,0 +1,17 @@
+---
+# Setup starter
+
+- name: Install hosts
+  template: src=hosts.j2 dest=/etc/hosts
+
+- name: Install private-key
+  copy: src=rabbitmq_id_rsa dest=/home/vagrant/.ssh/rabbitmq_id_rsa owner=vagrant group=vagrant mode=0600
+
+- name: Install ssh/config
+  copy: src=config dest=/home/vagrant/.ssh/config owner=vagrant group=vagrant mode=0600
+
+- name: Install amqp-tools
+  apt: name=amqp-tools
+
+- name: Install RabbitMQ Cluster startup script
+  template: src=setup-rabbitmq.sh.j2 dest=/home/vagrant/setup-rabbitmq.sh owner=vagrant group=vagrant mode=0700

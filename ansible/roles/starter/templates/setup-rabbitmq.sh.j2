@@ -1,0 +1,26 @@
+#!/bin/bash
+set -eux
+ssh sv2 sudo rabbitmqctl stop_app
+ssh sv2 sudo rabbitmqctl join_cluster rabbit@sv1
+ssh sv2 sudo rabbitmqctl start_app
+ssh sv3 sudo rabbitmqctl stop_app
+ssh sv3 sudo rabbitmqctl join_cluster rabbit@sv2
+ssh sv3 sudo rabbitmqctl start_app
+
+ssh sv1 sudo rabbitmqctl cluster_status
+ssh sv2 sudo rabbitmqctl cluster_status
+ssh sv3 sudo rabbitmqctl cluster_status
+
+ssh sv1 sudo rabbitmqctl set_policy ha-all \'\^\(\?\!amq\\.\).\*\' \'{\"ha-mode\": \"all\"}\'
+ssh sv1 sudo rabbitmqctl list_policies
+
+amqp-declare-queue --url amqp://{{ rabbitmq_user }}:{{ rabbitmq_password }}@sv1 -q testq
+amqp-publish --url amqp://{{ rabbitmq_user }}:{{ rabbitmq_password }}@sv1 -r testq -b " *** from_sv1 *** "
+amqp-publish --url amqp://{{ rabbitmq_user }}:{{ rabbitmq_password }}@sv2 -r testq -b " *** from_sv2 *** "
+amqp-publish --url amqp://{{ rabbitmq_user }}:{{ rabbitmq_password }}@sv3 -r testq -b " *** from_sv3 *** "
+ssh sv1 sudo rabbitmqctl stop_app
+amqp-get --url amqp://{{ rabbitmq_user }}:{{ rabbitmq_password }}@sv2 -q testq
+amqp-get --url amqp://{{ rabbitmq_user }}:{{ rabbitmq_password }}@sv3 -q testq
+ssh sv1 sudo rabbitmqctl start_app
+amqp-get --url amqp://{{ rabbitmq_user }}:{{ rabbitmq_password }}@sv1 -q testq
+amqp-delete-queue --url amqp://{{ rabbitmq_user }}:{{ rabbitmq_password }}@sv1 -q testq

@@ -1,0 +1,20 @@
+---
+# Common settings
+
+rabbitmq_user: guest
+rabbitmq_password: guest
+
+rabbitmq_server_ips:
+  - 10.0.0.71
+  - 10.0.0.72
+  - 10.0.0.73
+
+rabbitmq_servers:
+  - ip: 10.0.0.70
+    name: starter.local starter
+  - ip: "{{ rabbitmq_server_ips[0] }}"
+    name: sv1.local sv1
+  - ip: "{{ rabbitmq_server_ips[1] }}"
+    name: sv2.local sv2
+  - ip: "{{ rabbitmq_server_ips[2] }}"
+    name: sv3.local sv3

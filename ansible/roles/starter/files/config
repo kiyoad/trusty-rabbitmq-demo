@@ -1,0 +1,14 @@
+Host sv1
+  Hostname sv1.local
+  User vagrant
+  IdentityFile ~/.ssh/rabbitmq_id_rsa
+
+Host sv2
+  Hostname sv2.local
+  User vagrant
+  IdentityFile ~/.ssh/rabbitmq_id_rsa
+
+Host sv3
+  Hostname sv3.local
+  User vagrant
+  IdentityFile ~/.ssh/rabbitmq_id_rsa

@@ -1,0 +1,31 @@
+---
+# Setup RabbitMQ
+
+- name: Install hosts
+  template: src=hosts.j2 dest=/etc/hosts
+
+- name: Add authorized key
+  authorized_key: user=vagrant key="{{ lookup('file', 'rabbitmq_id_rsa.pub') }}"
+
+- name: Install RabbitMQ server
+  apt: name=rabbitmq-server
+
+- name: Enable rabbitmq_management
+  shell: |
+    rabbitmq-plugins enable rabbitmq_management
+    service rabbitmq-server restart
+
+- name: Wait RabbitMQ server start
+  wait_for: port=5672 delay=10
+
+- name: Stop RabbitMQ server
+  shell: service rabbitmq-server stop
+
+- name: Wait a while
+  shell: sleep 10
+
+- name: Set common cookie
+  copy: src=dot.erlang.cookie dest=/var/lib/rabbitmq/.erlang.cookie owner=rabbitmq group=rabbitmq mode=0400
+
+- name: Start RabbitMQ server again
+  shell: service rabbitmq-server start

@@ -1,0 +1,5 @@
+---
+# Deploy RabbitMQ Cluster
+
+- include: rabbitmq.yml
+- include: starter.yml

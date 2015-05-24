@@ -1,0 +1,8 @@
+---
+# RabbitMQ Cluster starter
+
+- hosts: starter
+  roles:
+    - common
+    - starter
+  sudo: yes
