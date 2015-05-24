@@ -1,12 +1,6 @@
 ---
 # Common task
 
-- name: add local package repository
-  shell: |
-    export local_repo=/etc/apt/sources.list.d/local_repo.list
-    echo 'deb     http://192.168.1.200/apt-mirror/ubuntu/ trusty main restricted universe' >  ${local_repo}
-    echo 'deb-src http://192.168.1.200/apt-mirror/ubuntu/ trusty main restricted universe' >> ${local_repo}
-
 - name: default package upgrade
   apt: upgrade=yes update_cache=yes cache_valid_time=86400
 
